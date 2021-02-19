@@ -1,4 +1,4 @@
-	package me.mrgeotech.main;
+package me.mrgeotech.main;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -91,14 +91,25 @@ public class ClientHandler extends Thread {
 					e.printStackTrace();
 				}
 			} else if (command.equalsIgnoreCase("add")) {
-				try {
-					Connection mySQL = DriverManager.getConnection(SQL_IP);
-					Statement st = mySQL.createStatement();
-					st.execute("INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + inputs[5] + ", " + inputs[6] + ", " + inputs[7] + ", " + inputs[8] + ");");
-					System.out.println("[" + java.time.LocalDateTime.now() + "]: " + "INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + inputs[5] + ", " + inputs[6] + ", " + inputs[7] + ", " + inputs[8] + ");");
-					return;
-				} catch (SQLException e) {
-					e.printStackTrace();
+				if (ClientChecker.canTrust(client)) {
+					try {
+						Connection mySQL = DriverManager.getConnection(SQL_IP);
+						Statement st = mySQL.createStatement();
+						st.execute("INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + inputs[5] + ", " + inputs[6] + ", " + inputs[7] + ", " + inputs[8] + ");");
+						System.out.println("[" + java.time.LocalDateTime.now() + "]: " + "INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + inputs[5] + ", " + inputs[6] + ", " + inputs[7] + ", " + inputs[8] + ");");
+						outStream.writeUTF("Player punishment has been added to the Universal History database.");
+						return;
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						outStream.writeUTF("Your ip is not trusted and therefore can not add to the database.");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 	}
