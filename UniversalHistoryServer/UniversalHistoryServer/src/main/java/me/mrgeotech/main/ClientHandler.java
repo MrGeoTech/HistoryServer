@@ -35,11 +35,11 @@ public class ClientHandler extends Thread {
 			inStream = new ObjectInputStream(client.getInputStream());
 			String[] inputs = (String[]) inStream.readObject();
 			System.out.println("Inputs read!");
-			System.out.println(inputs[0]);
-			System.out.println(inputs[1]);
-			if (inputs[0].equals("close")) {
+			if (inputs[0].equalsIgnoreCase("a8ol;qw90k3[]x87nsjiofikjr[fyns'd;ms804nj.ah9fdj")) {
 				return;
 			}
+			System.out.println(inputs[0]);
+			System.out.println(inputs[1]);
 			
 			// Handles the SQL handling in the other class because I have some sense or organization
 			this.handleClient(inputs);
@@ -58,7 +58,7 @@ public class ClientHandler extends Thread {
 	
 	private void handleClient(String[] inputs) {
 			System.out.println(inputs.length);
-			if (!(inputs.length == 2 || inputs.length == 9)) {
+			if (!(inputs.length == 2 || inputs.length == 8)) {
 				System.out.println("Returning");
 				return;
 			}
@@ -95,9 +95,9 @@ public class ClientHandler extends Thread {
 					try {
 						Connection mySQL = DriverManager.getConnection(SQL_IP);
 						Statement st = mySQL.createStatement();
-						st.execute("INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + inputs[5] + ", " + inputs[6] + ", " + inputs[7] + ", " + inputs[8] + ");");
-						System.out.println("[" + java.time.LocalDateTime.now() + "]: " + "INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + inputs[5] + ", " + inputs[6] + ", " + inputs[7] + ", " + inputs[8] + ");");
-						outStream.writeUTF("Player punishment has been added to the Universal History database.");
+						st.execute("INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES ('" + inputs[1] + "', '" + inputs[2] + "', '" + inputs[3] + "', '" + inputs[4] + "', '" + client.getInetAddress().getHostAddress() + "', '" + inputs[5] + "', '" + inputs[6] + "', '" + inputs[7] + "');");
+						System.out.println("[" + java.time.LocalDateTime.now() + "]: " + "INSERT INTO Historys (PlayerUUID, PlayerName, StaffUUID, StaffName, ServerIP, Date, Type, Reason) VALUES (" + inputs[1] + ", " + inputs[2] + ", " + inputs[3] + ", " + inputs[4] + ", " + client.getInetAddress().getHostAddress() + ", " + inputs[6] + ", " + inputs[7] + ");");
+						outStream.writeBoolean(true);
 						return;
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -106,7 +106,7 @@ public class ClientHandler extends Thread {
 					}
 				} else {
 					try {
-						outStream.writeUTF("Your ip is not trusted and therefore can not add to the database.");
+						outStream.writeBoolean(false);;
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
