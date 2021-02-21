@@ -33,7 +33,7 @@ public class Server {
 					try {
 						Socket close = new Socket("localhost", 50000);
 						String[] string = new String[1];
-						string[0] = "close";
+						string[0] = "a8ol;qw90k3[]x87nsjiofikjr[fyns'd;ms804nj.ah9fdj";
 						new ObjectOutputStream(close.getOutputStream()).writeObject(string);
 						close.close();
 						server.join();
